@@ -1,18 +1,3 @@
-"""import csv
-import tkinter as tk
-from tkinter import filedialog, ttk
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
-
-file_p="power_usage_2016_to_2020.csv"
-
-with open(file_p, mode="r",encoding="utf-8") as file:
-    f_reader=csv.reader(file)
-    for row in f_reader:
-        print(row)"""
-
 import tkinter as tk
 from tkinter import filedialog, ttk
 import pandas as pd
@@ -33,8 +18,20 @@ class PlotApp:
         self.preview_label = tk.Label(root, text="Data Preview:")
         self.preview_label.pack(pady=5)
         
-        self.text_preview = tk.Text(root, height=10, width=80)
-        self.text_preview.pack(pady=10)
+        # Adding a scrollable text preview
+        self.text_frame = tk.Frame(root)
+        self.text_frame.pack(pady=10, fill="both", expand=True)
+
+        self.text_preview = tk.Text(self.text_frame, height=10, wrap="none")
+        self.text_preview.pack(side="left", fill="both", expand=True)
+        
+        self.v_scrollbar = tk.Scrollbar(self.text_frame, orient="vertical", command=self.text_preview.yview)
+        self.v_scrollbar.pack(side="right", fill="y")
+        self.text_preview.config(yscrollcommand=self.v_scrollbar.set)
+
+        self.h_scrollbar = tk.Scrollbar(root, orient="horizontal", command=self.text_preview.xview)
+        self.h_scrollbar.pack(fill="x")
+        self.text_preview.config(xscrollcommand=self.h_scrollbar.set)
         
         self.options_frame = tk.Frame(root)
         self.options_frame.pack(pady=10)
@@ -56,8 +53,6 @@ class PlotApp:
         
         self.plot_frame = tk.Frame(root)
         self.plot_frame.pack(pady=10)
-        
-        self.load_data("power_usage_2016_to_2020.csv")
     
     def browse_file(self):
         filepath = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
@@ -68,8 +63,7 @@ class PlotApp:
     def load_data(self, filepath):
         try:
             self.data = pd.read_csv(filepath)
-            self.text_preview.delete("1.0", tk.END)
-            self.text_preview.insert(tk.END, self.data.head().to_string())
+            self.preview_data()
             
             columns = self.data.columns.tolist()
             self.x_combobox["values"] = columns
@@ -78,12 +72,18 @@ class PlotApp:
             self.text_preview.delete("1.0", tk.END)
             self.text_preview.insert(tk.END, f"Error loading file: {e}")
     
+    def preview_data(self, num_rows=20):
+        self.text_preview.delete("1.0", tk.END)
+        if self.data is not None:
+            preview = self.data.head(num_rows).to_string(index=False)
+            self.text_preview.insert(tk.END, preview)
+    
     def plot_data(self):
         x_col = self.x_combobox.get()
         y_col = self.y_combobox.get()
         
         if not x_col or not y_col:
-            self.text_preview.insert(tk.END, "\nPlease select X and Y columns!")
+            self.text_preview.insert(tk.END, "\nPlease select x and y columns!")
             return
         
         fig, ax = plt.subplots(figsize=(5, 4))
@@ -103,4 +103,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = PlotApp(root)
     root.mainloop()
-
