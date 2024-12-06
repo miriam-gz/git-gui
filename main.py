@@ -18,7 +18,6 @@ class PlotApp:
         self.preview_label = tk.Label(root, text="Data Preview:")
         self.preview_label.pack(pady=5)
         
-        # Adding a scrollable text preview
         self.text_frame = tk.Frame(root)
         self.text_frame.pack(pady=10, fill="both", expand=True)
 
