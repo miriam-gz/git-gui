@@ -85,7 +85,6 @@ class PlotApp:
 
         fig, ax = plt.subplots(figsize=(5, 4))
 
-        # Select plot type
         if plot_type == 'Line':
             ax.plot(self.data[x_col], self.data[y_col], label=f"{y_col} vs {x_col}")
         elif plot_type == 'Bar':
