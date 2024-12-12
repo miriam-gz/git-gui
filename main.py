@@ -38,13 +38,12 @@ class PlotApp:
         self.y_combobox = ttk.Combobox(self.options_frame, state="readonly")
         self.y_combobox.grid(row=0, column=3, padx=5)
 
-        # Adding plot type selection
         self.plot_type_label = tk.Label(self.options_frame, text="Plot Type:")
         self.plot_type_label.grid(row=0, column=4, padx=5)
         self.plot_type_combobox = ttk.Combobox(self.options_frame, state="readonly")
         self.plot_type_combobox['values'] = ['Line', 'Bar', 'Scatter']
         self.plot_type_combobox.grid(row=0, column=5, padx=5)
-        self.plot_type_combobox.current(0)  # Set default selection
+        self.plot_type_combobox.current(0)  
 
         self.plot_button = tk.Button(root, text="Plot", command=self.plot_data)
         self.plot_button.pack(pady=10)
